@@ -1,13 +1,13 @@
 interface Props {
   newSubject: string;
   setNewSubject: (value: string) => void;
-  handleAddSubject: () => void;
+  onAdd: () => void;
 }
 
 export default function AddSubjectForm({
   newSubject,
   setNewSubject,
-  handleAddSubject,
+  onAdd,
 }: Props) {
   return (
     <div className="mb-8 bg-white p-4 rounded-lg shadow">
@@ -23,7 +23,7 @@ export default function AddSubjectForm({
           className="flex-1 p-2 border border-gray-300 rounded"
         />
         <button
-          onClick={handleAddSubject}
+          onClick={onAdd}
           className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
         >
           Add Subject

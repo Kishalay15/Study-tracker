@@ -1,4 +1,4 @@
-import type { Subject } from "../StudyTracker";
+import type { Subject } from "../types";
 
 interface Props {
   subjects: Subject[];
@@ -6,7 +6,7 @@ interface Props {
   setSelectedSubject: (value: string) => void;
   newTopic: string;
   setNewTopic: (value: string) => void;
-  handleAddTopic: () => void;
+  onAdd: () => void;
 }
 
 export default function AddTopicForm({
@@ -15,7 +15,7 @@ export default function AddTopicForm({
   setSelectedSubject,
   newTopic,
   setNewTopic,
-  handleAddTopic,
+  onAdd,
 }: Props) {
   return (
     <div className="mb-8 bg-white p-4 rounded-lg shadow">
@@ -44,7 +44,7 @@ export default function AddTopicForm({
           disabled={!selectedSubject}
         />
         <button
-          onClick={handleAddTopic}
+          onClick={onAdd}
           className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:bg-gray-400"
           disabled={!selectedSubject}
         >

@@ -1,31 +1,38 @@
 import { Trash2 } from "lucide-react";
-import type { Subject } from "../StudyTracker";
+import type { Subject } from "../types";
 import TopicItem from "./TopicItem";
 
 interface Props {
   subject: Subject;
+  onDelete: (subject: string) => void;
   onToggle: (subject: string, topic: string) => void;
-  onDeleteSubject: (subject: string) => void;
   onDeleteTopic: (subject: string, topic: string) => void;
+  onAddSubtopic: (subject: string, topic: string, sub: string) => void;
+  onToggleSubtopic: (subject: string, topic: string, sub: string) => void;
+  onDeleteSubtopic: (subject: string, topic: string, sub: string) => void;
 }
+
+const calculateProgress = (subject: Subject): number => {
+  const total = subject.topics.length;
+  const done = subject.topics.filter((t) => t.completed).length;
+  return total === 0 ? 0 : Math.round((done / total) * 100);
+};
 
 export default function SubjectCard({
   subject,
+  onDelete,
   onToggle,
-  onDeleteSubject,
   onDeleteTopic,
+  onAddSubtopic,
+  onToggleSubtopic,
+  onDeleteSubtopic,
 }: Props) {
-  const completedCount = subject.topics.filter((t) => t.completed).length;
-  const progress = subject.topics.length
-    ? Math.round((completedCount / subject.topics.length) * 100)
-    : 0;
-
   return (
     <div className="bg-white p-4 rounded-lg shadow max-h-[500px] overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-indigo-800">{subject.name}</h2>
         <button
-          onClick={() => onDeleteSubject(subject.name)}
+          onClick={() => onDelete(subject.name)}
           className="text-red-600 hover:text-red-800"
         >
           <Trash2 size={18} />
@@ -36,11 +43,13 @@ export default function SubjectCard({
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <div
             className="bg-green-600 h-2.5 rounded-full"
-            style={{ width: `${progress}%` }}
-          />
+            style={{ width: `${calculateProgress(subject)}%` }}
+          ></div>
         </div>
         <p className="text-sm text-gray-600 mt-1">
-          Progress: {progress}% ({completedCount}/{subject.topics.length})
+          Progress: {calculateProgress(subject)}% (
+          {subject.topics.filter((t) => t.completed).length}/
+          {subject.topics.length})
         </p>
       </div>
 
@@ -57,6 +66,9 @@ export default function SubjectCard({
               subjectName={subject.name}
               onToggle={onToggle}
               onDelete={onDeleteTopic}
+              onAddSubtopic={onAddSubtopic}
+              onToggleSubtopic={onToggleSubtopic}
+              onDeleteSubtopic={onDeleteSubtopic}
             />
           ))
         )}

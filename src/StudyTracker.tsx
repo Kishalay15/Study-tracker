@@ -1,22 +1,13 @@
 import { useState, useEffect } from "react";
+import type { Subject } from "./types";
 import AddSubjectForm from "./components/AddSubjectForm";
 import AddTopicForm from "./components/AddTopicForm";
 import SubjectCard from "./components/SubjectCard";
 
-export interface Topic {
-  name: string;
-  completed: boolean;
-}
-
-export interface Subject {
-  name: string;
-  topics: Topic[];
-}
-
 export default function StudyTracker() {
   const [subjects, setSubjects] = useState<Subject[]>(() => {
-    const savedData = localStorage.getItem("studyTrackerData");
-    return savedData ? (JSON.parse(savedData) as Subject[]) : [];
+    const saved = localStorage.getItem("studyTrackerData");
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [newSubject, setNewSubject] = useState("");
@@ -27,69 +18,161 @@ export default function StudyTracker() {
     localStorage.setItem("studyTrackerData", JSON.stringify(subjects));
   }, [subjects]);
 
-  const handleAddSubject = () => {
+  const addSubject = () => {
     if (!newSubject.trim()) return;
-    const exists = subjects.some(
-      (s) => s.name.toLowerCase() === newSubject.toLowerCase()
-    );
-    if (exists) return alert("This subject already exists!");
+    if (
+      subjects.some((s) => s.name.toLowerCase() === newSubject.toLowerCase())
+    ) {
+      alert("Subject already exists");
+      return;
+    }
     setSubjects([...subjects, { name: newSubject, topics: [] }]);
     setNewSubject("");
   };
 
-  const handleAddTopic = () => {
+  const addTopic = () => {
     if (!newTopic.trim() || !selectedSubject) return;
-    setSubjects((prev) =>
-      prev.map((subject) => {
+
+    setSubjects(
+      subjects.map((subject) => {
         if (subject.name === selectedSubject) {
-          const exists = subject.topics.some(
-            (t) => t.name.toLowerCase() === newTopic.toLowerCase()
-          );
-          if (exists) {
-            alert("This topic already exists for this subject!");
+          if (
+            subject.topics.some(
+              (t) => t.name.toLowerCase() === newTopic.toLowerCase()
+            )
+          ) {
+            alert("Topic already exists");
             return subject;
           }
+
           return {
             ...subject,
-            topics: [...subject.topics, { name: newTopic, completed: false }],
+            topics: [
+              ...subject.topics,
+              { name: newTopic, completed: false, subtopics: [] },
+            ],
           };
         }
         return subject;
       })
     );
+
     setNewTopic("");
   };
 
-  const toggleTopic = (subjectName: string, topicName: string) => {
-    setSubjects((prev) =>
-      prev.map((s) =>
-        s.name === subjectName
-          ? {
-              ...s,
-              topics: s.topics.map((t) =>
-                t.name === topicName ? { ...t, completed: !t.completed } : t
-              ),
-            }
-          : s
-      )
-    );
-  };
-
   const deleteSubject = (name: string) => {
-    if (confirm(`Delete "${name}" and its topics?`)) {
+    if (confirm(`Delete subject "${name}"?`)) {
       setSubjects(subjects.filter((s) => s.name !== name));
     }
   };
 
-  const deleteTopic = (subjectName: string, topicName: string) => {
-    setSubjects((prev) =>
-      prev.map((s) =>
-        s.name === subjectName
+  const toggleTopic = (subjectName: string, topicName: string) => {
+    setSubjects(
+      subjects.map((subject) =>
+        subject.name === subjectName
           ? {
-              ...s,
-              topics: s.topics.filter((t) => t.name !== topicName),
+              ...subject,
+              topics: subject.topics.map((topic) =>
+                topic.name === topicName
+                  ? { ...topic, completed: !topic.completed }
+                  : topic
+              ),
             }
-          : s
+          : subject
+      )
+    );
+  };
+
+  const deleteTopic = (subjectName: string, topicName: string) => {
+    setSubjects(
+      subjects.map((subject) =>
+        subject.name === subjectName
+          ? {
+              ...subject,
+              topics: subject.topics.filter((t) => t.name !== topicName),
+            }
+          : subject
+      )
+    );
+  };
+
+  const addSubtopic = (
+    subjectName: string,
+    topicName: string,
+    subName: string
+  ) => {
+    setSubjects(
+      subjects.map((subject) =>
+        subject.name === subjectName
+          ? {
+              ...subject,
+              topics: subject.topics.map((topic) =>
+                topic.name === topicName
+                  ? {
+                      ...topic,
+                      subtopics: [
+                        ...topic.subtopics,
+                        { name: subName, completed: false },
+                      ],
+                    }
+                  : topic
+              ),
+            }
+          : subject
+      )
+    );
+  };
+
+  const toggleSubtopic = (
+    subjectName: string,
+    topicName: string,
+    subName: string
+  ) => {
+    setSubjects(
+      subjects.map((subject) =>
+        subject.name === subjectName
+          ? {
+              ...subject,
+              topics: subject.topics.map((topic) =>
+                topic.name === topicName
+                  ? {
+                      ...topic,
+                      subtopics: topic.subtopics.map((sub) =>
+                        sub.name === subName
+                          ? { ...sub, completed: !sub.completed }
+                          : sub
+                      ),
+                    }
+                  : topic
+              ),
+            }
+          : subject
+      )
+    );
+  };
+
+  const deleteSubtopic = (
+    subjectName: string,
+    topicName: string,
+    subName: string
+  ) => {
+    setSubjects(
+      subjects.map((subject) =>
+        subject.name === subjectName
+          ? {
+              ...subject,
+              topics: subject.topics.map((topic) =>
+                topic.name === topicName
+                  ? {
+                      ...topic,
+                      subtopics: topic.subtopics.filter(
+                        (sub) => sub.name !== subName
+                      ),
+                    }
+                  : topic
+              ),
+            }
+          : subject
       )
     );
   };
@@ -103,16 +186,16 @@ export default function StudyTracker() {
       <AddSubjectForm
         newSubject={newSubject}
         setNewSubject={setNewSubject}
-        handleAddSubject={handleAddSubject}
+        onAdd={addSubject}
       />
 
       <AddTopicForm
-        subjects={subjects}
-        selectedSubject={selectedSubject}
-        setSelectedSubject={setSelectedSubject}
         newTopic={newTopic}
         setNewTopic={setNewTopic}
-        handleAddTopic={handleAddTopic}
+        selectedSubject={selectedSubject}
+        setSelectedSubject={setSelectedSubject}
+        subjects={subjects}
+        onAdd={addTopic}
       />
 
       {subjects.length === 0 ? (
@@ -125,9 +208,12 @@ export default function StudyTracker() {
             <SubjectCard
               key={subject.name}
               subject={subject}
+              onDelete={deleteSubject}
               onToggle={toggleTopic}
-              onDeleteSubject={deleteSubject}
               onDeleteTopic={deleteTopic}
+              onAddSubtopic={addSubtopic}
+              onToggleSubtopic={toggleSubtopic}
+              onDeleteSubtopic={deleteSubtopic}
             />
           ))}
         </div>
