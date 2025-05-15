@@ -178,8 +178,8 @@ export default function StudyTracker() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-8 text-indigo-700">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">
         Exam Study Tracker
       </h1>
 
@@ -203,7 +203,7 @@ export default function StudyTracker() {
           <p className="text-gray-500">No subjects added yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {subjects.map((subject) => (
             <SubjectCard
               key={subject.name}
