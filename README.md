@@ -18,7 +18,7 @@ A responsive web application to help students organize and track their exam prep
 - **TypeScript**: For type-safe code
 - **Tailwind CSS**: For styling and responsive design
 - **Lucide React**: For iconography
-- **LocalStorage API**: For data persistence
+- **LocalStorage**: For data persistence
 
 ## Usage
 
@@ -75,10 +75,6 @@ The interface adapts to various screen sizes:
 - Priority indicators for topics
 - Due date tracking
 - Notes and resource links for topics
-
-## License
-
-MIT
 
 ---
 
