@@ -31,33 +31,45 @@ export default function TopicItem({
     setNewSubtopic("");
   };
 
+  const renderSubtopicCount = () => {
+    if (topic.subtopics.length === 0) return null;
+
+    const expandCollapseIcon =
+      topic.subtopics.length > 3 ? (expanded ? "(-)" : "(+)") : "";
+    return (
+      <span className="text-xs text-gray-500 ml-1 inline-flex whitespace-nowrap">
+        {expandCollapseIcon} {topic.subtopics.length}
+      </span>
+    );
+  };
+
   return (
     <li className="py-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center flex-grow min-w-0">
           <input
             type="checkbox"
             checked={topic.completed}
             onChange={() => onToggle(subjectName, topic.name)}
-            className="w-4 h-4 text-indigo-600 mr-2 sm:mr-3"
+            className="w-4 h-4 flex-shrink-0 text-indigo-600 mr-2 sm:mr-3"
           />
-          <span
-            className={`${
-              topic.completed ? "line-through text-gray-500" : ""
-            } text-sm sm:text-base break-words max-w-[70%]`}
+          <div
+            className="flex items-center min-w-0 cursor-pointer"
             onClick={() => topic.subtopics.length > 0 && setExpanded(!expanded)}
           >
-            {topic.name}
-            {topic.subtopics.length > 0 && (
-              <span className="text-xs text-gray-500 ml-1">
-                ({expanded ? "−" : "+"}) {topic.subtopics.length}
-              </span>
-            )}
-          </span>
+            <span
+              className={`${
+                topic.completed ? "line-through text-gray-500" : ""
+              } text-sm sm:text-base truncate flex-grow`}
+            >
+              {topic.name}
+            </span>
+            {renderSubtopicCount()}
+          </div>
         </div>
         <button
           onClick={() => onDelete(subjectName, topic.name)}
-          className="text-red-500 hover:text-red-700 text-sm"
+          className="text-red-500 hover:text-red-700 text-sm flex-shrink-0 ml-2"
           aria-label="Delete topic"
         >
           <X size={16} />
@@ -71,19 +83,19 @@ export default function TopicItem({
               key={sub.name}
               className="flex justify-between items-center py-1"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0">
                 <input
                   type="checkbox"
                   checked={sub.completed}
                   onChange={() =>
                     onToggleSubtopic(subjectName, topic.name, sub.name)
                   }
-                  className="w-3 sm:w-4 h-3 sm:h-4 text-indigo-500"
+                  className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-indigo-500"
                 />
                 <span
                   className={`${
                     sub.completed ? "line-through text-gray-500" : ""
-                  } break-words max-w-[75%]`}
+                  } truncate`}
                 >
                   {sub.name}
                 </span>
@@ -92,7 +104,7 @@ export default function TopicItem({
                 onClick={() =>
                   onDeleteSubtopic(subjectName, topic.name, sub.name)
                 }
-                className="text-xs text-red-400 hover:text-red-600"
+                className="text-xs text-red-400 hover:text-red-600 flex-shrink-0 ml-2"
                 aria-label="Delete subtopic"
               >
                 <X size={14} />

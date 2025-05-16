@@ -130,25 +130,30 @@ export default function StudyTracker() {
     subName: string
   ) => {
     setSubjects(
-      subjects.map((subject) =>
-        subject.name === subjectName
-          ? {
-              ...subject,
-              topics: subject.topics.map((topic) =>
-                topic.name === topicName
-                  ? {
-                      ...topic,
-                      subtopics: topic.subtopics.map((sub) =>
-                        sub.name === subName
-                          ? { ...sub, completed: !sub.completed }
-                          : sub
-                      ),
-                    }
-                  : topic
-              ),
-            }
-          : subject
-      )
+      subjects.map((subject) => {
+        if (subject.name !== subjectName) return subject;
+
+        return {
+          ...subject,
+          topics: subject.topics.map((topic) => {
+            if (topic.name !== topicName) return topic;
+
+            const updatedSubtopics = topic.subtopics.map((sub) =>
+              sub.name === subName ? { ...sub, completed: !sub.completed } : sub
+            );
+
+            const allSubtopicsCompleted =
+              updatedSubtopics.length > 0 &&
+              updatedSubtopics.every((sub) => sub.completed);
+
+            return {
+              ...topic,
+              subtopics: updatedSubtopics,
+              completed: allSubtopicsCompleted,
+            };
+          }),
+        };
+      })
     );
   };
 
@@ -158,23 +163,30 @@ export default function StudyTracker() {
     subName: string
   ) => {
     setSubjects(
-      subjects.map((subject) =>
-        subject.name === subjectName
-          ? {
-              ...subject,
-              topics: subject.topics.map((topic) =>
-                topic.name === topicName
-                  ? {
-                      ...topic,
-                      subtopics: topic.subtopics.filter(
-                        (sub) => sub.name !== subName
-                      ),
-                    }
-                  : topic
-              ),
-            }
-          : subject
-      )
+      subjects.map((subject) => {
+        if (subject.name !== subjectName) return subject;
+
+        return {
+          ...subject,
+          topics: subject.topics.map((topic) => {
+            if (topic.name !== topicName) return topic;
+
+            const updatedSubtopics = topic.subtopics.filter(
+              (sub) => sub.name !== subName
+            );
+
+            const allSubtopicsCompleted =
+              updatedSubtopics.length > 0 &&
+              updatedSubtopics.every((sub) => sub.completed);
+
+            return {
+              ...topic,
+              subtopics: updatedSubtopics,
+              completed: allSubtopicsCompleted,
+            };
+          }),
+        };
+      })
     );
   };
 
