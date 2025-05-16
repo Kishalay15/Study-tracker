@@ -10,7 +10,7 @@ export default function AddSubtopicForm({
   onAdd,
 }: Props) {
   return (
-    <div className="flex gap-2 mt-2">
+    <div className="flex flex-col xs:flex-row gap-2 mt-2">
       <input
         type="text"
         value={newSubtopic}
@@ -20,7 +20,7 @@ export default function AddSubtopicForm({
       />
       <button
         onClick={onAdd}
-        className="bg-indigo-500 text-white px-2 py-1 rounded text-sm"
+        className="bg-violet-500 text-white px-2 py-1 rounded text-sm"
       >
         Add
       </button>

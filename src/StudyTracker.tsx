@@ -13,6 +13,7 @@ export default function StudyTracker() {
   const [newSubject, setNewSubject] = useState("");
   const [newTopic, setNewTopic] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("studyTrackerData", JSON.stringify(subjects));
@@ -177,26 +178,70 @@ export default function StudyTracker() {
     );
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">
-        Exam Study Tracker
-      </h1>
+      <header className="mb-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-violet-700">
+            Study Tracker
+          </h1>
 
-      <AddSubjectForm
-        newSubject={newSubject}
-        setNewSubject={setNewSubject}
-        onAdd={addSubject}
-      />
+          <button
+            className="md:hidden bg-violet-600 text-white p-2 rounded-lg"
+            onClick={toggleMobileMenu}
+          >
+            {isMobileMenuOpen ? "Close" : "Menu"}
+          </button>
+        </div>
+      </header>
 
-      <AddTopicForm
-        newTopic={newTopic}
-        setNewTopic={setNewTopic}
-        selectedSubject={selectedSubject}
-        setSelectedSubject={setSelectedSubject}
-        subjects={subjects}
-        onAdd={addTopic}
-      />
+      <div
+        className={`md:hidden transition-all duration-300 overflow-hidden ${
+          isMobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="space-y-4 bg-white p-4 rounded-lg shadow mb-4">
+          <AddSubjectForm
+            newSubject={newSubject}
+            setNewSubject={setNewSubject}
+            onAdd={addSubject}
+            isMobile={true}
+          />
+
+          <AddTopicForm
+            newTopic={newTopic}
+            setNewTopic={setNewTopic}
+            selectedSubject={selectedSubject}
+            setSelectedSubject={setSelectedSubject}
+            subjects={subjects}
+            onAdd={addTopic}
+            isMobile={true}
+          />
+        </div>
+      </div>
+
+      <div className="hidden md:block space-y-6">
+        <AddSubjectForm
+          newSubject={newSubject}
+          setNewSubject={setNewSubject}
+          onAdd={addSubject}
+          isMobile={false}
+        />
+
+        <AddTopicForm
+          newTopic={newTopic}
+          setNewTopic={setNewTopic}
+          selectedSubject={selectedSubject}
+          setSelectedSubject={setSelectedSubject}
+          subjects={subjects}
+          onAdd={addTopic}
+          isMobile={false}
+        />
+      </div>
 
       {subjects.length === 0 ? (
         <div className="text-center p-8 bg-white rounded-lg shadow">
@@ -218,6 +263,19 @@ export default function StudyTracker() {
           ))}
         </div>
       )}
+      <footer className="text-center text-gray-400 text-xs py-6">
+        <span>
+          Built with <span className="text-violet-700">💜</span> by{" "}
+          <a
+            href="https://personal-portfolio-wheat-kappa.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-violet-600 transition-colors"
+          >
+            Kishalay
+          </a>
+        </span>
+      </footer>
     </div>
   );
 }

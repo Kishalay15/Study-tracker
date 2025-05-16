@@ -28,12 +28,15 @@ export default function SubjectCard({
   onDeleteSubtopic,
 }: Props) {
   return (
-    <div className="bg-white p-4 rounded-lg shadow max-h-[500px] overflow-y-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-indigo-800">{subject.name}</h2>
+    <div className="bg-white p-3 sm:p-4 rounded-lg shadow max-h-[500px] overflow-y-auto">
+      <div className="flex justify-between items-center mb-3 sm:mb-4">
+        <h2 className="text-lg sm:text-xl font-bold text-indigo-800 break-words max-w-[80%]">
+          {subject.name}
+        </h2>
         <button
           onClick={() => onDelete(subject.name)}
           className="text-red-600 hover:text-red-800"
+          aria-label="Delete subject"
         >
           <Trash2 size={18} />
         </button>
@@ -46,7 +49,7 @@ export default function SubjectCard({
             style={{ width: `${calculateProgress(subject)}%` }}
           ></div>
         </div>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-xs sm:text-sm text-gray-600 mt-1">
           Progress: {calculateProgress(subject)}% (
           {subject.topics.filter((t) => t.completed).length}/
           {subject.topics.length})

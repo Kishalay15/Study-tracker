@@ -7,6 +7,7 @@ interface Props {
   newTopic: string;
   setNewTopic: (value: string) => void;
   onAdd: () => void;
+  isMobile: boolean;
 }
 
 export default function AddTopicForm({
@@ -16,17 +17,24 @@ export default function AddTopicForm({
   newTopic,
   setNewTopic,
   onAdd,
+  isMobile,
 }: Props) {
   return (
-    <div className="mb-8 bg-white p-4 rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+    <div className={isMobile ? "" : "mb-8 bg-white p-4 rounded-lg shadow"}>
+      <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-4 text-gray-800">
         Add New Topic
       </h2>
-      <div className="flex flex-col md:flex-row gap-2">
+      <div
+        className={
+          isMobile ? "flex flex-col gap-2" : "flex flex-col md:flex-row gap-2"
+        }
+      >
         <select
           value={selectedSubject}
           onChange={(e) => setSelectedSubject(e.target.value)}
-          className="p-2 border border-gray-300 rounded md:w-1/3"
+          className={`p-2 border border-gray-300 rounded ${
+            isMobile ? "w-full" : "md:w-1/3"
+          }`}
         >
           <option value="">Select a subject</option>
           {subjects.map((subject) => (
@@ -40,12 +48,16 @@ export default function AddTopicForm({
           value={newTopic}
           onChange={(e) => setNewTopic(e.target.value)}
           placeholder="Enter topic name"
-          className="flex-1 p-2 border border-gray-300 rounded"
+          className={`p-2 border border-gray-300 rounded ${
+            isMobile ? "w-full" : "flex-1"
+          }`}
           disabled={!selectedSubject}
         />
         <button
           onClick={onAdd}
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:bg-gray-400"
+          className={`bg-violet-600 text-white px-4 py-2 rounded hover:bg-violet-700 disabled:bg-gray-400 ${
+            isMobile ? "w-full" : ""
+          }`}
           disabled={!selectedSubject}
         >
           Add Topic
