@@ -13,3 +13,11 @@ export interface Subject {
   name: string;
   topics: Topic[];
 }
+
+export interface Event {
+  id: string;
+  date: string; // ISO format: YYYY-MM-DD
+  title: string;
+  description: string;
+  subjectId?: string;
+}
